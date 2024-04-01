@@ -3,42 +3,34 @@ from typing import List
 
 class Solution:
     def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
-        height = len(heights)
         width = len(heights[0])
-        pac_set = {(0, i) for i in range(width)} | {(j, 0) for j in range(height)}
-        atl_set = {(height - 1, i) for i in range(width)} | {
-            (j, width - 1) for j in range(height)
-        }
-        adj_list = [(0, 1), (1, 0), (-1, 0), (0, -1)]
+        height = len(heights)
 
-        visited = set()
-
-        def dfs(y: int, x: int):
-            coord = (y, x)
-            if coord in visited:
+        def dfs(i: int, j: int, ocean: set, prev: int):
+            coord = (j, i)
+            curr = heights[j][i]
+            if coord in ocean or prev > curr:
                 return
-            visited.add(coord)
-            for adj in adj_list:
-                new_coord = (coord[0] + adj[0], coord[1] + adj[1])
-                if (
-                    new_coord[0] >= height
-                    or new_coord[0] < 0
-                    or new_coord[1] >= width
-                    or new_coord[1] < 0
-                ):
-                    continue
-                if heights[new_coord[0]][new_coord[1]] < heights[coord[0]][coord[1]]:
-                    continue
-                dfs(new_coord[0], new_coord[1])
-                if new_coord in pac_set:
-                    pac_set.add(coord)
-                if new_coord in atl_set:
-                    atl_set.add(coord)
+            ocean.add(coord)
 
+            if i < width - 1:
+                dfs(i + 1, j, ocean, curr)
+            if i > 0:
+                dfs(i - 1, j, ocean, curr)
+            if j < height - 1:
+                dfs(i, j + 1, ocean, curr)
+            if j > 0:
+                dfs(i, j - 1, ocean, curr)
+
+        pacific = set()
+        atlantic = set()
         for j in range(height):
-            for i in range(width):
-                dfs(j, i)
+            dfs(0, j, pacific, float("-inf"))
+            dfs(width - 1, j, atlantic, float("-inf"))
 
-        return list(pac_set & atl_set)
+        for i in range(width):
+            dfs(i, 0, pacific, float("-inf"))
+            dfs(i, height - 1, atlantic, float("-inf"))
 
-# This solution is currently not working
+        combined = pacific & atlantic
+        return [list(coord) for coord in combined]
