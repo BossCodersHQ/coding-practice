@@ -3,31 +3,18 @@ from typing import List
 
 class Solution:
     def longestConsecutive(self, nums: List[int]) -> int:
-        if not nums:
-            return 0
-
-        top = bottom = nums[0]
+        map = set(nums)
+        longest = 0
         for num in nums:
-            if num < bottom:
-                bottom = num
-            if num > top:
-                top = num
+            if num - 1 in map:
+                continue
+            # If it's the start of a sequence
+            next_num = num
+            while next_num in map:
+                next_num += 1
 
-        length = top - bottom + 1
-        arr = [False] * length
-        offset = 0 - bottom
-        for num in nums:
-            arr[num + offset] = True
-
-        max_count = 0
-        i = j = 0
-        while i < length:
-            while j < length and arr[j]:
-                j += 1
-            max_count = max(max_count, j - i)
-            i = j + 1
-            j = i
-        return max_count
+            longest = max(longest, next_num - num)
+        return longest
 
 
 if __name__ == "__main__":
