@@ -3,17 +3,24 @@ from typing import List
 
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
-        def cs(curr: List[int], new_target: int, results: set, level: int):
-            if new_target == 0:
-                results.add(tuple(sorted(curr)))
-                return
-            for val in candidates:
-                if new_target - val >= 0:
-                    cs(curr + [val], new_target - val, results, level + 1)
+        ret = []
 
-        ret = set()
-        cs([], target, ret, 0)
-        return [list(vals) for vals in ret]
+        def dfs(count: int, arr: List[int], curr: int):
+            if count < 0 or curr >= len(candidates):
+                return
+            if count == 0:
+                ret.append(arr)
+                return
+
+            # Choosing curr
+            val = candidates[curr]
+            dfs(count - val, arr + [val], curr)
+
+            # Not Choosing curr & moving to next place
+            dfs(count, arr, curr + 1)
+
+        dfs(target, [], 0)
+        return ret
 
 
 if __name__ == "__main__":
