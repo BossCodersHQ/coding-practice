@@ -3,24 +3,14 @@ from typing import List
 
 class Solution:
     def lengthOfLIS(self, nums: List[int]) -> int:
-
-        def dfs(i, arr):
-            if i == len(nums):
-                return len(arr)
-
-            with_i = 0
-            last_num = float("-inf") if len(arr) == 0 else arr[-1]
-
-            if nums[i] > last_num:
-                arr.append(nums[i])
-                with_i = dfs(i + 1, arr)
-                arr.pop()
-
-            without_i = dfs(i + 1, arr)
-
-            return max(with_i, without_i)
-
-        return dfs(0, [])
+        dp = [1] * len(nums)
+        for i in range(len(nums) - 1, -1, -1):  # 1
+            longest = 1
+            for j in range(i + 1, len(nums)):  # 2
+                if nums[j] > nums[i]:
+                    longest = max(longest, 1 + dp[j])
+            dp[i] = longest
+        return max(dp)
 
 
 if __name__ == "__main__":
