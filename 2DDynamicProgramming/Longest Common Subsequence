@@ -1,0 +1,42 @@
+class Solution:
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        # find smaller string
+        small, large = (text1, text2) if len(text2) > len(text1) else (text2, text1)
+        large_map = {}
+        for i, c in enumerate(large):
+            large_map[c] = large_map.get(c, i)
+
+        print(large_map)
+
+        def hasseq(a, b, s) -> bool:
+            hasa = hasb = False
+            for c in s:
+                if c == a:
+                    hasa = True
+                if c == b and hasa:
+                    hasb = True
+            return hasb
+
+        dp = [0] * len(small)
+
+        for i in range(len(small) - 1, -1, -1):
+            if small[i] not in large_map:
+                continue
+            longest = 1
+            for j in range(i + 1, len(small)):
+                if dp[j] == 0:
+                    continue
+                if hasseq(small[i], small[j], large):
+                    longest = max(longest, dp[j] + 1)
+            dp[i] = longest
+        print(dp)
+        return max(dp)
+
+
+if __name__ == "__main__":
+    s = Solution()
+    assert s.longestCommonSubsequence("abcde", "ace") == 3
+    assert s.longestCommonSubsequence("abc", "abc") == 3
+    assert s.longestCommonSubsequence("abc", "def") == 0
+    assert s.longestCommonSubsequence("abcba", "abcbcba") == 5
+    assert s.longestCommonSubsequence("bsbininm", "jmjkbkjkv") == 1 # currently failing
