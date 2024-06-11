@@ -1,36 +1,21 @@
 class Solution:
     def longestCommonSubsequence(self, text1: str, text2: str) -> int:
-        # find smaller string
-        small, large = (text1, text2) if len(text2) > len(text1) else (text2, text1)
-        large_map = {}
-        for i, c in enumerate(large):
-            large_map[c] = large_map.get(c, i)
+        width, height = len(text1), len(text2)
+        dp = [[0] * width for i in range(height)]
 
-        print(large_map)
+        def dfs(r, c):
+            if r == height or c == width:
+                return 0
+            if dp[r][c]:
+                return dp[r][c]
+            if text1[c] == text2[r]:
+                dp[r][c] = 1 + dfs(r + 1, c + 1)
+            else:
+                dp[r][c] = max(dfs(r + 1, c), dfs(r, c + 1))
+            return dp[r][c]
 
-        def hasseq(a, b, s) -> bool:
-            hasa = hasb = False
-            for c in s:
-                if c == a:
-                    hasa = True
-                if c == b and hasa:
-                    hasb = True
-            return hasb
-
-        dp = [0] * len(small)
-
-        for i in range(len(small) - 1, -1, -1):
-            if small[i] not in large_map:
-                continue
-            longest = 1
-            for j in range(i + 1, len(small)):
-                if dp[j] == 0:
-                    continue
-                if hasseq(small[i], small[j], large):
-                    longest = max(longest, dp[j] + 1)
-            dp[i] = longest
-        print(dp)
-        return max(dp)
+        dfs(0, 0)
+        return dp[0][0]
 
 
 if __name__ == "__main__":
@@ -39,4 +24,4 @@ if __name__ == "__main__":
     assert s.longestCommonSubsequence("abc", "abc") == 3
     assert s.longestCommonSubsequence("abc", "def") == 0
     assert s.longestCommonSubsequence("abcba", "abcbcba") == 5
-    assert s.longestCommonSubsequence("bsbininm", "jmjkbkjkv") == 1 # currently failing
+    assert s.longestCommonSubsequence("bsbininm", "jmjkbkjkv") == 1
