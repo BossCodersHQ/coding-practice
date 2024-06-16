@@ -7,7 +7,18 @@ class Solution:
     ) -> List[List[int]]:
         result = []
         ni = newInterval
-        for i in range(len(intervals)):
+        # binary search to find point where to start
+        l, r = 0, len(intervals)
+        while r - l > 1:
+            m = int((l + r) / 2)
+            val = intervals[m][0]
+            if ni[0] >= val:
+                l = m
+            else:
+                r = m
+        result = intervals[:l]
+
+        for i in range(l, len(intervals)):
             curr = intervals[i]
             # Check if overlapping
             if curr[0] <= ni[1] and curr[1] >= ni[0]:
