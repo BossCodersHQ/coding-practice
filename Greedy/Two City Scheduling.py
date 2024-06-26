@@ -29,3 +29,11 @@ class Solution:
                 total += costb
                 print("b", numb, costb, total)
         return total
+
+
+if __name__ == "__main__":
+    s = Solution()
+    costs = [[10, 20], [30, 200], [400, 50], [30, 20]]
+    assert s.twoCitySchedCost(costs) == 110
+    costs = [[259, 770], [448, 54], [926, 667], [184, 139], [840, 118], [577, 469]]
+    assert s.twoCitySchedCost(costs) == 1859
