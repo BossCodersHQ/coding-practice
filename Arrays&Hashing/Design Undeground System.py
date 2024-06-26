@@ -36,3 +36,14 @@ class UndergroundSystem:
 # obj.checkIn(id,stationName,t)
 # obj.checkOut(id,stationName,t)
 # param_3 = obj.getAverageTime(startStation,endStation)
+
+if __name__ == "__main__":
+    undergroundSystem = UndergroundSystem()
+    undergroundSystem.checkIn(45, "Leyton", 3)
+    undergroundSystem.checkIn(32, "Paradise", 8)
+    undergroundSystem.checkIn(27, "Leyton", 10)
+    undergroundSystem.checkOut(45, "Waterloo", 15)
+    undergroundSystem.checkOut(27, "Waterloo", 20)
+    undergroundSystem.checkOut(32, "Cambridge", 22)
+    assert undergroundSystem.getAverageTime("Paradise", "Cambridge") == 14.0
+    assert undergroundSystem.getAverageTime("Leyton", "Waterloo") == 11.0
