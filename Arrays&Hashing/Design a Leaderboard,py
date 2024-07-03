@@ -1,0 +1,62 @@
+import bisect
+
+
+class Leaderboard:
+
+    def __init__(self):
+        self.players_map = {}
+        self.ss = []  # Sorted Scores
+
+    def addScore(self, playerId: int, score: int) -> None:
+        print(f"Inserting {playerId},{score} to: {self.ss}")
+        curr_pos = self.players_map.get(playerId, None)
+        if not curr_pos:
+            new_pos = bisect.bisect_right(self.ss, score, key=lambda x: x[1])
+            self.ss.insert(new_pos, [playerId, score])
+            self.players_map[playerId] = new_pos
+        else:
+            curr_player, curr_score = self.ss[curr_pos]
+            self.ss.pop(curr_pos)  # Removing player from leaderboard
+            assert playerId == curr_player
+
+            new_score = curr_score + score
+            new_pos = bisect.bisect_right(self.ss, new_score, key=lambda x: x[1])
+
+            self.ss.insert(new_pos, [playerId, new_score])
+            self.players_map[playerId] = new_pos
+        print(f"    curr players map: {self.players_map}")
+        print(f"    curr ss: {self.ss}")
+
+    def top(self, K: int) -> int:
+        scores = [el[1] for el in self.ss[-K:]]
+        print(self.ss, scores)
+
+        return sum(scores)
+
+    def reset(self, playerId: int) -> None:
+        print(f"resetting {playerId} at pos {self.players_map[playerId]}: {self.ss}")
+        print(f"    curr player map: {self.players_map}")
+        curr_pos = self.players_map[playerId]
+        self.ss.pop(curr_pos)
+        del self.players_map[playerId]
+        print(f"    finished reset of {playerId}, ss looksl ike this: {self.ss}")
+
+
+# Your Leaderboard object will be instantiated and called as such:
+# obj = Leaderboard()
+# obj.addScore(playerId,score)
+# param_2 = obj.top(K)
+# obj.reset(playerId)
+
+if __name__ == "__main__":
+    lb = Leaderboard()
+    lb.addScore(1, 73)
+    lb.addScore(2, 56)
+    lb.addScore(3, 39)
+    lb.addScore(4, 51)
+    lb.addScore(5, 4)
+    assert lb.top(1) == 73
+    lb.reset(1)
+    lb.reset(2)
+    lb.addScore(2, 51)
+    assert lb.top(3) == 141
