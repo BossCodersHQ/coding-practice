@@ -1,16 +1,22 @@
-import bisect
 from typing import List
+
+import heapq
 
 
 class KthLargest:
 
     def __init__(self, k: int, nums: List[int]):
-        self.nums = sorted(nums)
+        heapq.heapify(nums)
         self.k = k
+        while len(nums) > k:
+            heapq.heappop(nums)
+        self.nums = nums
 
     def add(self, val: int) -> int:
-        bisect.insort_left(self.nums, val)
-        return self.nums[-self.k]
+        heapq.heappush(self.nums, val)
+        while len(self.nums) > self.k:
+            heapq.heappop(self.nums)
+        return self.nums[0]
 
 
 # Your KthLargest object will be instantiated and called as such:
