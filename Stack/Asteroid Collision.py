@@ -1,23 +1,22 @@
 from typing import List
 
+
 class Solution:
     def asteroidCollision(self, asteroids: List[int]) -> List[int]:
-        def opposite(i, j):
-            return (i > 0 and j < 0) or (j > 0 and i < 0)
-
-        stack = []  # []
-        skip = False
-        for ast in asteroids:  # -50
-            while stack and opposite(ast, stack[-1]):
-                prev = stack.pop()  # 30
-                if abs(ast) == abs(prev):
-                    skip = True
+        stack = []
+        for nxt in asteroids:
+            while nxt and nxt < 0 and stack and stack[-1] > 0:
+                pop = stack.pop()
+                if abs(pop) == abs(nxt):
+                    nxt = None
+                elif abs(pop) > abs(nxt):
+                    nxt = pop
                 else:
-                    ast = ast if abs(ast) > abs(prev) else prev
-            if not skip:
-                stack.append(ast)  # [-50]
-            skip = False
+                    nxt = nxt
+            if nxt:
+                stack.append(nxt)
         return stack
+
 
 if __name__ == "__main__":
     solution = Solution()
