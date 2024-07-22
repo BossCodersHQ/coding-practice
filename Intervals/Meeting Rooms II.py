@@ -3,18 +3,22 @@ from typing import List
 
 class Solution:
     def minMeetingRooms(self, intervals: List[List[int]]) -> int:
-        intervals.sort(key=lambda x: x[0])
         rooms = []
+        intervals.sort(key=lambda x: x[0])
         for interval in intervals:
-            need_room = True
-            for i in range(len(rooms)):
-                earliest = rooms[i]
-                if interval[0] >= earliest:
-                    rooms[i] = interval[1]
-                    need_room = False
-                    break
-            if need_room:
+            if not rooms:
                 rooms.append(interval[1])
+                continue
+            added = False
+            for i in range(len(rooms)):
+                room = rooms[i]
+                if interval[0] >= room:
+                    rooms[i] = interval[1]
+                    added = True
+                    break
+            if not added:
+                rooms.append(interval[1])
+
         return len(rooms)
 
 
