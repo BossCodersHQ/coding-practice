@@ -21,8 +21,27 @@ class Solution:
         return len(rooms)
 
 
+class Solution2:
+    def minMeetingRooms(self, intervals: List[List[int]]) -> int:
+        times = []
+        for start, end in intervals:
+            times.append((start, 1))
+            times.append((end, -1))
+
+        times.sort(key=lambda x: (x[0], x[1]))
+
+        max_count = count = 0
+        for time, c in times:
+            if c == 1:
+                count += 1
+            else:
+                count -= 1
+            max_count = max(max_count, count)
+        return max_count
+
+
 if __name__ == "__main__":
-    s = Solution()
+    s = Solution2()
     intervals = [[0, 30], [5, 10], [15, 20]]
     assert s.minMeetingRooms(intervals) == 2
     intervals = [[7, 10], [2, 4]]
