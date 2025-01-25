@@ -1,71 +1,62 @@
-from typing import List
+from collections import deque
 
 
 class Solution:
-    def numIslands(self, grid: List[List[str]]) -> int:
-        width = len(grid[0])
-        height = len(grid)
-        num_groups = 0
+    def numIslands(self, grid: list[list[str]]) -> int:
 
-        def dfs(i, j):
-            if grid[j][i] == "0":
-                return
-            grid[j][i] = "0"
-            if i + 1 < width:
-                dfs(i + 1, j)
-            if i - 1 >= 0:
-                dfs(i - 1, j)
-            if j + 1 < height:
-                dfs(i, j + 1)
-            if j - 1 >= 0:
-                dfs(i, j - 1)
-
-        for j in range(height):
-            for i in range(width):
-                if grid[j][i] == "0":
+        def bfs(col, row):
+            q = deque()
+            q.appendleft((col,row))
+            while q:
+                c, r = q.pop()
+                if (
+                    c < 0
+                    or c >= len(grid)
+                    or r < 0
+                    or r >= len(grid[0])
+                    or grid[c][r] == "0"
+                ):
                     continue
-                dfs(i, j)
-                num_groups += 1
-        return num_groups
+
+                grid[c][r] = "0"
+                q.appendleft((c + 1, r))
+                q.appendleft((c - 1, r))
+                q.appendleft((c, r + 1))
+                q.appendleft((c, r - 1))
+
+        count = 0
+        for c in range(len(grid)):
+            for r in range(len(grid[0])):
+                if grid[c][r] == "0":
+                    continue
+                count += 1
+                bfs(c, r)
+        return count
+
 
 
 if __name__ == "__main__":
     s = Solution()
-    grid = [
+    grid1 = [
         ["1", "1", "1", "1", "0"],
         ["1", "1", "0", "1", "0"],
         ["1", "1", "0", "0", "0"],
         ["0", "0", "0", "0", "0"],
     ]
-    assert s.numIslands(grid) == 1
-    grid = [
+    assert s.numIslands(grid1) == 1
+
+    grid2 = [
         ["1", "1", "0", "0", "0"],
         ["1", "1", "0", "0", "0"],
         ["0", "0", "1", "0", "0"],
         ["0", "0", "0", "1", "1"],
     ]
-    assert s.numIslands(grid) == 3
-    grid = [["1", "1", "1"], ["0", "1", "0"], ["1", "1", "1"]]
-    assert s.numIslands(grid) == 1
-    grid = [["1", "0", "1"], ["0", "1", "0"], ["1", "0", "1"]]
-    assert s.numIslands(grid) == 5
-    grid = [["1", "0", "1"], ["0", "0", "0"], ["1", "0", "1"]]
-    assert s.numIslands(grid) == 4
-    grid = [["1", "0", "1"], ["0", "0", "0"], ["1", "0", "0"]]
-    assert s.numIslands(grid) == 3
-    grid = [["1", "0", "1"], ["0", "0", "0"], ["0", "0", "0"]]
-    assert s.numIslands(grid) == 2
-    grid = [["1", "0", "0"], ["0", "0", "0"], ["0", "0", "0"]]
-    assert s.numIslands(grid) == 1
-    grid = [["1", "1", "1"], ["1", "1", "1"], ["1", "1", "1"]]
-    assert s.numIslands(grid) == 1
-    grid = [["1", "0", "1"], ["0", "0", "0"], ["1", "0", "1"]]
-    assert s.numIslands(grid) == 4
-    grid = [["1", "0", "1"], ["0", "0", "0"], ["1", "0", "1"]]
-    assert s.numIslands(grid) == 4
-    grid = [["1", "0", "1"], ["0", "0", "0"], ["1", "0", "0"]]
-    assert s.numIslands(grid) == 3
-    grid = [["1", "0", "1"], ["0", "0", "0"], ["0", "0", "0"]]
-    assert s.numIslands(grid) == 2
-    grid = [["1", "0", "0"], ["0", "0", "0"], ["0", "0", "0"]]
-    assert s.numIslands(grid) == 1
+    assert s.numIslands(grid2) == 3
+
+    grid3 = [
+        ["1", "0", "1", "0", "1"],
+        ["0", "1", "0", "1", "0"],
+        ["1", "0", "1", "0", "1"],
+        ["0", "1", "0", "1", "0"],
+    ]
+    assert s.numIslands(grid3) == 10
